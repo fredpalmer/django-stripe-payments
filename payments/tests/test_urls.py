@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+
 from .mock_views import MockView
 from ..urls import urlpatterns
 

@@ -4,17 +4,14 @@ import json
 import traceback
 
 import six
+import stripe
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.encoding import smart_str
-from django.template.loader import render_to_string
-
-from django.contrib.sites.models import Site
-
-import stripe
-
 from jsonfield.fields import JSONField
 
 from .managers import CustomerManager, ChargeManager, TransferManager
@@ -40,13 +37,11 @@ from .utils import (
     convert_amount_for_api,
 )
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = getattr(settings, "STRIPE_API_VERSION", "2012-11-07")
 
 
 class StripeObject(models.Model):
-
     stripe_id = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -55,7 +50,6 @@ class StripeObject(models.Model):
 
 
 class EventProcessingException(models.Model):
-
     event = models.ForeignKey("Event", null=True)
     data = models.TextField()
     message = models.CharField(max_length=500)
@@ -76,7 +70,6 @@ class EventProcessingException(models.Model):
 
 
 class Event(StripeObject):
-
     kind = models.CharField(max_length=250)
     livemode = models.BooleanField(default=False)
     customer = models.ForeignKey("Customer", null=True)
@@ -93,7 +86,6 @@ class Event(StripeObject):
         return "%s - %s" % (self.kind, self.stripe_id)
 
     def link_customer(self):
-        cus_id = None
         customer_crud_events = [
             "customer.created",
             "customer.updated",
@@ -294,7 +286,6 @@ class Transfer(StripeObject):
 
 
 class TransferChargeFee(models.Model):
-
     transfer = models.ForeignKey(Transfer, related_name="charge_fee_details")
     amount = models.DecimalField(decimal_places=2, max_digits=9)
     currency = models.CharField(max_length=10, default="usd")
@@ -305,7 +296,6 @@ class TransferChargeFee(models.Model):
 
 
 class Customer(StripeObject):
-
     user = models.OneToOneField(
         getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         null=True
@@ -348,9 +338,9 @@ class Customer(StripeObject):
 
     def can_charge(self):
         return self.card_fingerprint and \
-            self.card_last_4 and \
-            self.card_kind and \
-            self.date_purged is None
+               self.card_last_4 and \
+               self.card_kind and \
+               self.date_purged is None
 
     def has_active_subscription(self):
         try:
@@ -457,9 +447,7 @@ class Customer(StripeObject):
         if hasattr(cu, "active_card") and cu.active_card:
             # Test to make sure the card has changed, otherwise do not update it
             # (i.e. refrain from sending any signals)
-            if (self.card_last_4 != cu.active_card.last4 or
-                    self.card_fingerprint != cu.active_card.fingerprint or
-                    self.card_kind != cu.active_card.type):
+            if self.card_last_4 != cu.active_card.last4 or self.card_fingerprint != cu.active_card.fingerprint or self.card_kind != cu.active_card.type:
                 updated = True
                 self.card_last_4 = cu.active_card.last4
                 self.card_fingerprint = cu.active_card.fingerprint
@@ -575,12 +563,17 @@ class Customer(StripeObject):
         subscription_made.send(sender=self, plan=plan, stripe_response=resp)
         return resp
 
-    def charge(self, amount, currency="usd", description=None,
-               send_receipt=True, capture=True):
+    def charge(self, amount, currency="usd", description=None, send_receipt=True, capture=True):
         """
         This method expects `amount` to be a Decimal type representing a
         dollar amount. It will be converted to cents so any decimals beyond
         two will be ignored.
+
+        :param capture:
+        :param send_receipt:
+        :param description:
+        :param currency:
+        :param amount:
         """
         if not isinstance(amount, decimal.Decimal):
             raise ValueError(
@@ -598,13 +591,13 @@ class Customer(StripeObject):
             obj.send_receipt()
         return obj
 
-    def record_charge(self, charge_id):
+    @staticmethod
+    def record_charge(charge_id):
         data = stripe.Charge.retrieve(charge_id)
         return Charge.sync_from_stripe_data(data)
 
 
 class CurrentSubscription(models.Model):
-
     customer = models.OneToOneField(
         Customer,
         related_name="current_subscription",
@@ -656,6 +649,7 @@ class CurrentSubscription(models.Model):
         Set values to None while deleting the object so that any lingering
         references will not show previous values (such as when an Event
         signal is triggered after a subscription has been deleted)
+        :param using:
         """
         super(CurrentSubscription, self).delete(using=using)
         self.plan = None
@@ -665,7 +659,6 @@ class CurrentSubscription(models.Model):
 
 
 class Invoice(models.Model):
-
     stripe_id = models.CharField(max_length=255)
     customer = models.ForeignKey(Customer, related_name="invoices")
     attempted = models.NullBooleanField()
@@ -788,7 +781,6 @@ class Invoice(models.Model):
 
 
 class InvoiceItem(models.Model):
-
     stripe_id = models.CharField(max_length=255)
     created_at = models.DateTimeField(default=timezone.now)
     invoice = models.ForeignKey(Invoice, related_name="items")
@@ -807,7 +799,6 @@ class InvoiceItem(models.Model):
 
 
 class Charge(StripeObject):
-
     customer = models.ForeignKey(Customer, related_name="charges")
     invoice = models.ForeignKey(Invoice, null=True, related_name="charges")
     card_last_4 = models.CharField(max_length=4, blank=True)

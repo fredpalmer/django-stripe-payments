@@ -24,7 +24,7 @@ from .models import (
 )
 
 
-class PaymentsContextMixin(object):
+class PaymentsContextMixin(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PaymentsContextMixin, self).get_context_data(**kwargs)
@@ -48,7 +48,7 @@ def _ajax_response(request, template, **kwargs):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-class SubscribeView(PaymentsContextMixin, TemplateView):
+class SubscribeView(PaymentsContextMixin):
     template_name = "payments/subscribe.html"
 
     def get_context_data(self, **kwargs):
@@ -59,11 +59,11 @@ class SubscribeView(PaymentsContextMixin, TemplateView):
         return context
 
 
-class ChangeCardView(PaymentsContextMixin, TemplateView):
+class ChangeCardView(PaymentsContextMixin):
     template_name = "payments/change_card.html"
 
 
-class CancelView(PaymentsContextMixin, TemplateView):
+class CancelView(PaymentsContextMixin):
     template_name = "payments/cancel.html"
 
 
@@ -71,7 +71,7 @@ class ChangePlanView(SubscribeView):
     template_name = "payments/change_plan.html"
 
 
-class HistoryView(PaymentsContextMixin, TemplateView):
+class HistoryView(PaymentsContextMixin):
     template_name = "payments/history.html"
 
 

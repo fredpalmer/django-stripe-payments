@@ -2,7 +2,6 @@ from django import template
 
 from ..forms import PlanForm
 
-
 register = template.Library()
 
 

@@ -5,15 +5,14 @@ import six
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-
 from mock import patch
 
 from . import TRANSFER_CREATED_TEST_DATA, TRANSFER_PENDING_TEST_DATA
 from ..models import Event, Transfer, EventProcessingException
 
 
+# noinspection PyPep8Naming
 class TestWebhook(TestCase):
-
     @patch("stripe.Event.retrieve")
     def test_webhook_with_transfer_event(self, StripeEventMock):
         data = {
@@ -85,7 +84,6 @@ class TestWebhook(TestCase):
 
 
 class TestTransferWebhooks(TestCase):
-
     def test_transfer_created(self):
         event = Event.objects.create(
             stripe_id=TRANSFER_CREATED_TEST_DATA["id"],

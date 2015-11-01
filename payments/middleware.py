@@ -6,7 +6,6 @@ from .models import Customer
 
 
 class ActiveSubscriptionMiddleware(object):
-
     def process_request(self, request):
         if request.user.is_authenticated() and not request.user.is_staff:
             url_name = resolve(request.path).url_name

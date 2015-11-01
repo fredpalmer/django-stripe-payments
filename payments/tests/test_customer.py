@@ -2,7 +2,6 @@
 import decimal
 
 from django.test import TestCase
-
 from mock import patch, PropertyMock, Mock
 
 from ..models import Customer, Charge
@@ -10,6 +9,7 @@ from ..signals import card_changed
 from ..utils import get_user_model
 
 
+# noinspection PyPep8Naming
 class TestCustomer(TestCase):
     def setUp(self):
         self.User = get_user_model()
@@ -207,6 +207,7 @@ class TestCustomer(TestCase):
         """
         Test to make sure Customer.sync removes credit card when there is no active card
         """
+
         def _perform_test(kitchen):
             kitchen.sync()
 

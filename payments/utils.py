@@ -26,11 +26,15 @@ def convert_tstamp(response, field_name=None):
 def get_user_model():  # pragma: no cover
     try:
         # pylint: disable=E0611
-        from django.contrib.auth import get_user_model as django_get_user_model
-        return django_get_user_model()
+        # noinspection PyUnresolvedReferences
+        from django.contrib.auth import get_user_model
     except ImportError:
         from django.contrib.auth.models import User
-        return User
+        user_model = User
+    else:
+        user_model = get_user_model()
+
+    return user_model
 
 
 def load_path_attr(path):  # pragma: no cover

@@ -15,20 +15,19 @@ from .utils import get_user_model
 
 
 def user_search_fields():
-    User = get_user_model()
-    USERNAME_FIELD = getattr(User, "USERNAME_FIELD", None)
-    fields = []
-    if USERNAME_FIELD is not None:
+    user_model = get_user_model()
+    username_field = getattr(user_model, "USERNAME_FIELD", None)
+    if username_field is not None:
         # Using a Django 1.5+ User model
         fields = [
-            "user__{0}".format(USERNAME_FIELD)
+            "user__{0}".format(username_field)
         ]
 
         try:
-            # get_field_by_name throws FieldDoesNotExist if the field is not
-            # present on the model
+            # get_field throws FieldDoesNotExist if the field is not present on the model
             # pylint: disable=W0212,E1103
-            User._meta.get_field_by_name("email")
+            # noinspection PyProtectedMember
+            user_model._meta.get_field("email")
             fields += ["user__email"]
         except FieldDoesNotExist:
             pass
@@ -220,8 +219,8 @@ customer_has_card.short_description = "Customer Has Card"
 
 
 def customer_user(obj):
-    User = get_user_model()
-    if hasattr(User, "USERNAME_FIELD"):
+    user_model = get_user_model()
+    if hasattr(user_model, "USERNAME_FIELD"):
         # Using a Django 1.5+ User model
         username = getattr(obj.customer.user, "USERNAME_FIELD")
     else:

@@ -4,18 +4,17 @@ from ...utils import get_user_model
 
 
 class Command(BaseCommand):
-
     help = "Sync customer data"
 
     def handle(self, *args, **options):
-        User = get_user_model()
-        qs = User.objects.exclude(customer__isnull=True)
+        user_model = get_user_model()
+        qs = user_model.objects.exclude(customer__isnull=True)
         count = 0
         total = qs.count()
         for user in qs:
             count += 1
             perc = int(round(100 * (float(count) / float(total))))
-            if hasattr(User, "USERNAME_FIELD"):
+            if hasattr(user_model, "USERNAME_FIELD"):
                 # Using a Django 1.5+ User model
                 username = getattr(user, user.USERNAME_FIELD)
             else:

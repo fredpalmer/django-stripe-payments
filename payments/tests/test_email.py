@@ -3,18 +3,17 @@ import decimal
 
 from django.core import mail
 from django.test import TestCase
-
 from mock import patch
 
 from ..models import Customer
 from ..utils import get_user_model
 
 
+# noinspection PyPep8Naming
 class EmailReceiptTest(TestCase):
-
     def setUp(self):
-        User = get_user_model()
-        self.user = User.objects.create_user(username="patrick")
+        user_model = get_user_model()
+        self.user = user_model.objects.create_user(username="patrick")
         self.customer = Customer.objects.create(
             user=self.user,
             stripe_id="cus_xxxxxxxxxxxxxxx",

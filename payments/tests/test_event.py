@@ -9,10 +9,11 @@ from payments.signals import WEBHOOK_SIGNALS
 from ..utils import get_user_model
 
 
+# noinspection PyPep8Naming
 class TestEventMethods(TestCase):
     def setUp(self):
-        User = get_user_model()
-        self.user = User.objects.create_user(username="testuser")
+        user_model = get_user_model()
+        self.user = user_model.objects.create_user(username="testuser")
         self.user.save()
         self.customer = Customer.objects.create(
             stripe_id="cus_xxxxxxxxxxxxxxx",

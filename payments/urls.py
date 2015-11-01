@@ -9,7 +9,6 @@ from .views import (
     SubscribeView
 )
 
-
 urlpatterns = patterns(
     "payments.views",
     url(r"^webhook/$", "webhook", name="payments_webhook"),

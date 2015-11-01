@@ -4,7 +4,6 @@ from django.db import models
 
 
 class CustomerManager(models.Manager):
-
     def started_during(self, year, month):
         return self.exclude(
             current_subscription__status="trialing"
@@ -57,7 +56,6 @@ class CustomerManager(models.Manager):
 
 
 class TransferManager(models.Manager):
-
     def during(self, year, month):
         return self.filter(
             date__year=year,
@@ -80,7 +78,6 @@ class TransferManager(models.Manager):
 
 
 class ChargeManager(models.Manager):
-
     def during(self, year, month):
         return self.filter(
             charge_created__year=year,

@@ -1,13 +1,11 @@
 import decimal
 
+import stripe
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import stripe
-
 
 class Command(BaseCommand):
-
     help = "Make sure your Stripe account has the plans"
 
     def handle(self, *args, **options):

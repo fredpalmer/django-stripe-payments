@@ -5,12 +5,11 @@ from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 
-from ..models import convert_tstamp
 from .. import settings as app_settings
+from ..models import convert_tstamp
 
 
 class TestTimestampConversion(TestCase):
-
     def test_conversion_without_field_name(self):
         stamp = convert_tstamp(1365567407)
         self.assertEquals(
@@ -41,7 +40,6 @@ class TestTimestampConversion(TestCase):
 
 
 class TestPlanFromStripeId(TestCase):
-
     def test_plan_from_stripe_id_valid(self):
         self.assertEquals(
             app_settings.plan_from_stripe_id("pro-monthly"),
@@ -53,7 +51,6 @@ class TestPlanFromStripeId(TestCase):
 
 
 class TrialPeriodCallbackSettingTest(TestCase):
-
     def setUp(self):
         self.old_setting = settings.PAYMENTS_TRIAL_PERIOD_FOR_USER_CALLBACK
         del settings.PAYMENTS_TRIAL_PERIOD_FOR_USER_CALLBACK
