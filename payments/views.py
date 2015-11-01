@@ -1,18 +1,20 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
 import json
 
+import stripe
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_str
-from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
-
-import stripe
+from django.views.generic import TemplateView
 
 from . import settings as app_settings
 from .forms import PlanForm
@@ -25,7 +27,6 @@ from .models import (
 
 
 class PaymentsContextMixin(TemplateView):
-
     def get_context_data(self, **kwargs):
         context = super(PaymentsContextMixin, self).get_context_data(**kwargs)
         context.update({

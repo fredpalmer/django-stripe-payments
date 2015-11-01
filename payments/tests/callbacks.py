@@ -1,3 +1,7 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
+
 def callback_demo(user):
     return 3
 

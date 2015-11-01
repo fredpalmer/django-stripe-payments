@@ -1,9 +1,9 @@
+# coding=utf-8
+from __future__ import unicode_literals
 # pylint: disable=C0301
 import decimal
-
 from django.test import TestCase
 from mock import patch, PropertyMock, Mock
-
 from ..models import Customer, Charge
 from ..signals import card_changed
 from ..utils import get_user_model

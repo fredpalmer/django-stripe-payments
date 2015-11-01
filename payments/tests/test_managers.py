@@ -1,3 +1,6 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
 import datetime
 import decimal
 
@@ -10,7 +13,6 @@ from ..utils import get_user_model
 
 
 class CustomerManagerTest(TestCase):
-
     def setUp(self):
         user_model = get_user_model()
         # create customers and current subscription records
@@ -130,7 +132,6 @@ class CustomerManagerTest(TestCase):
 
 
 class TransferManagerTest(TestCase):
-
     def test_transfer_summary(self):
         event = Event.objects.create(
             stripe_id=TRANSFER_CREATED_TEST_DATA["id"],
@@ -173,7 +174,6 @@ class TransferManagerTest(TestCase):
 
 
 class ChargeManagerTests(TestCase):
-
     def setUp(self):
         customer = Customer.objects.create(
             user=get_user_model().objects.create_user(username="patrick"),

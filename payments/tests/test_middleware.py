@@ -1,22 +1,19 @@
+# coding=utf-8
+from __future__ import unicode_literals
 # pylint: disable=C0301
 import decimal
-
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
-
 from django.contrib.auth import authenticate, login, logout
-
 from mock import Mock
-
 from ..middleware import ActiveSubscriptionMiddleware
 from ..models import Customer, CurrentSubscription
 from ..utils import get_user_model
 
 
 class DummySession(dict):
-
     def cycle_key(self):
         return
 

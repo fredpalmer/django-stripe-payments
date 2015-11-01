@@ -1,8 +1,9 @@
+# coding=utf-8
+from __future__ import unicode_literals
 # pylint: disable=C0301
 from django.core import management
 from django.test import TestCase
 from mock import patch
-
 from ..models import Customer
 from ..utils import get_user_model
 

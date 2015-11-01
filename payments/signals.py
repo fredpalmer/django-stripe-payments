@@ -1,3 +1,6 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
 from django.dispatch import Signal
 
 cancelled = Signal(providing_args=["stripe_response"])

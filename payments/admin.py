@@ -1,3 +1,6 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
 from django.contrib import admin
 from django.db.models.fields import FieldDoesNotExist
 
@@ -41,10 +44,7 @@ def user_search_fields():
 
 
 def customer_search_fields():
-    return [
-        "customer__{0}".format(field)
-        for field in user_search_fields()
-    ]
+    return ["customer__{0}".format(field) for field in user_search_fields()]
 
 
 class CustomerHasCardListFilter(admin.SimpleListFilter):
@@ -92,7 +92,7 @@ class CustomerSubscriptionStatusListFilter(admin.SimpleListFilter):
                 "status",
                 flat=True
             ).distinct()
-        ]
+            ]
         statuses.append(["none", "No Subscription"])
         return statuses
 
@@ -118,11 +118,11 @@ admin.site.register(
         "created_at"
     ],
     search_fields=[
-        "stripe_id",
-        "customer__stripe_id",
-        "card_last_4",
-        "invoice__stripe_id"
-    ] + customer_search_fields(),
+                      "stripe_id",
+                      "customer__stripe_id",
+                      "card_last_4",
+                      "invoice__stripe_id"
+                  ] + customer_search_fields(),
     list_filter=[
         "paid",
         "disputed",
@@ -171,10 +171,10 @@ admin.site.register(
         "processed"
     ],
     search_fields=[
-        "stripe_id",
-        "customer__stripe_id",
-        "validated_message"
-    ] + customer_search_fields(),
+                      "stripe_id",
+                      "customer__stripe_id",
+                      "validated_message"
+                  ] + customer_search_fields(),
 )
 
 
@@ -184,8 +184,9 @@ class CurrentSubscriptionInline(admin.TabularInline):
 
 def subscription_status(obj):
     return obj.current_subscription.status
-subscription_status.short_description = "Subscription Status"
 
+
+subscription_status.short_description = "Subscription Status"
 
 admin.site.register(
     Customer,
@@ -203,8 +204,8 @@ admin.site.register(
         CustomerSubscriptionStatusListFilter
     ],
     search_fields=[
-        "stripe_id",
-    ] + user_search_fields(),
+                      "stripe_id",
+                  ] + user_search_fields(),
     inlines=[CurrentSubscriptionInline]
 )
 
@@ -215,6 +216,8 @@ class InvoiceItemInline(admin.TabularInline):
 
 def customer_has_card(obj):
     return obj.customer.card_fingerprint != ""
+
+
 customer_has_card.short_description = "Customer Has Card"
 
 
@@ -233,8 +236,9 @@ def customer_user(obj):
         username,
         email
     )
-customer_user.short_description = "Customer"
 
+
+customer_user.short_description = "Customer"
 
 admin.site.register(
     Invoice,
@@ -251,9 +255,9 @@ admin.site.register(
         "total"
     ],
     search_fields=[
-        "stripe_id",
-        "customer__stripe_id",
-    ] + customer_search_fields(),
+                      "stripe_id",
+                      "customer__stripe_id",
+                  ] + customer_search_fields(),
     list_filter=[
         InvoiceCustomerHasCardListFilter,
         "paid",
@@ -267,7 +271,6 @@ admin.site.register(
     ],
     inlines=[InvoiceItemInline]
 )
-
 
 admin.site.register(
     Transfer,

@@ -1,23 +1,20 @@
+# coding=utf-8
+from __future__ import unicode_literals
 # pylint: disable=C0301
 import decimal
 import json
-
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.encoding import smart_str
-
 import stripe
-
 from mock import patch
-
 from ..models import Customer, CurrentSubscription
 from ..utils import get_user_model
 from ..views import SubscribeView
 
 
 class PaymentsContextMixinTests(TestCase):
-
     def test_payments_context_mixin_get_context_data(self):
         data = SubscribeView().get_context_data()
         self.assertTrue("STRIPE_PUBLIC_KEY" in data)
@@ -26,14 +23,12 @@ class PaymentsContextMixinTests(TestCase):
 
 
 class SubscribeViewTests(TestCase):
-
     def test_payments_context_mixin_get_context_data(self):
         data = SubscribeView().get_context_data()
         self.assertTrue("form" in data)
 
 
 class AjaxViewsTests(TestCase):
-
     def setUp(self):
         self.password = "eldarion"
         self.user = get_user_model().objects.create_user(

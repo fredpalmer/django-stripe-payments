@@ -1,21 +1,20 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
 import decimal
 
+from django.contrib.auth import authenticate, login
 from django.test import TestCase
 from django.utils import timezone
-
-from django.contrib.auth import authenticate, login
-
 from mock import Mock
 
+from .test_middleware import DummySession
 from ..models import CurrentSubscription, Customer
 from ..templatetags.payments_tags import change_plan_form, subscribe_form
 from ..utils import get_user_model
 
-from .test_middleware import DummySession
-
 
 class PaymentsTagTests(TestCase):
-
     def test_change_plan_form(self):
         request = Mock()
         request.META = {}

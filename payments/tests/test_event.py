@@ -1,9 +1,9 @@
+# coding=utf-8
+from __future__ import unicode_literals
 # pylint: disable=C0301
 from django.test import TestCase
 from django.utils import timezone
-
 from mock import patch, Mock
-
 from ..models import Customer, Event, CurrentSubscription
 from payments.signals import WEBHOOK_SIGNALS
 from ..utils import get_user_model

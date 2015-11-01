@@ -1,3 +1,6 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
 TRANSFER_CREATED_TEST_DATA = {
     "created": 1348360173,
     "data": {
