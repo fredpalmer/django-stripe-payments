@@ -1,10 +1,18 @@
 import six
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 from .utils import load_path_attr
 
+# TODO: Look at the environment variables as well - not everyone wants to check these things in
+STRIPE_PUBLIC_KEY = getattr(settings, "STRIPE_PUBLIC_KEY", None)
+if not STRIPE_PUBLIC_KEY:
+    raise ImproperlyConfigured("A required configuration variable was missing: STRIPE_PUBLIC_KEY")
 
-STRIPE_PUBLIC_KEY = settings.STRIPE_PUBLIC_KEY
+STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", None)
+if not STRIPE_SECRET_KEY:
+    raise ImproperlyConfigured("A required configuration variable was missing: STRIPE_SECRET_KEY")
+
 INVOICE_FROM_EMAIL = getattr(
     settings,
     "PAYMENTS_INVOICE_FROM_EMAIL",
@@ -14,7 +22,7 @@ PAYMENTS_PLANS = getattr(settings, "PAYMENTS_PLANS", {})
 PLAN_CHOICES = [
     (plan, PAYMENTS_PLANS[plan].get("name", plan))
     for plan in PAYMENTS_PLANS
-]
+    ]
 DEFAULT_PLAN = getattr(
     settings,
     "PAYMENTS_DEFAULT_PLAN",
