@@ -205,7 +205,7 @@ class Transfer(StripeObject):
     # pylint: disable=C0301
     event = models.ForeignKey(Event, related_name="transfers")
     amount = models.DecimalField(decimal_places=2, max_digits=9)
-    currency = models.CharField(max_length=25, default="usd")
+    currency = models.CharField(max_length=10, default="usd")
     status = models.CharField(max_length=25)
     date = models.DateTimeField()
     description = models.TextField(null=True, blank=True)
