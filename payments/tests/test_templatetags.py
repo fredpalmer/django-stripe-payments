@@ -9,7 +9,7 @@ from django.utils import timezone
 from mock import Mock
 
 from .test_middleware import DummySession
-from ..models import CurrentSubscription, Customer
+from ..models import Subscription, Customer
 from ..templatetags.payments_tags import change_plan_form, subscribe_form
 from ..utils import get_user_model
 
@@ -26,7 +26,7 @@ class PaymentsTagTests(TestCase):
             stripe_id="cus_1",
             user=user
         )
-        CurrentSubscription.objects.create(
+        Subscription.objects.create(
             customer=customer,
             plan="pro",
             quantity=1,

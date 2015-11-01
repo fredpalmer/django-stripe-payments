@@ -20,7 +20,7 @@ from . import settings as app_settings
 from .forms import PlanForm
 from .models import (
     Customer,
-    CurrentSubscription,
+    Subscription,
     Event,
     EventProcessingException
 )
@@ -100,7 +100,7 @@ def change_plan(request):
     form = PlanForm(request.POST)
     try:
         current_plan = request.user.customer.current_subscription.plan
-    except CurrentSubscription.DoesNotExist:
+    except Subscription.DoesNotExist:
         current_plan = None
     if form.is_valid():
         try:

@@ -6,7 +6,7 @@ from django.db.models.fields import FieldDoesNotExist
 
 from .models import (
     Charge,
-    CurrentSubscription,
+    Subscription,
     Customer,
     Event,
     EventProcessingException,
@@ -88,7 +88,7 @@ class CustomerSubscriptionStatusListFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         statuses = [
             [x, x.replace("_", " ").title()]
-            for x in CurrentSubscription.objects.all().values_list(
+            for x in Subscription.objects.all().values_list(
                 "status",
                 flat=True
             ).distinct()
@@ -179,7 +179,7 @@ admin.site.register(
 
 
 class CurrentSubscriptionInline(admin.TabularInline):
-    model = CurrentSubscription
+    model = Subscription
 
 
 def subscription_status(obj):

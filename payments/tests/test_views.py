@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.encoding import smart_str
 import stripe
 from mock import patch
-from ..models import Customer, CurrentSubscription
+from ..models import Customer, Subscription
 from ..utils import get_user_model
 from ..views import SubscribeView
 
@@ -40,7 +40,7 @@ class AjaxViewsTests(TestCase):
             stripe_id="cus_1",
             user=self.user
         )
-        CurrentSubscription.objects.create(
+        Subscription.objects.create(
             customer=customer,
             plan="pro",
             quantity=1,

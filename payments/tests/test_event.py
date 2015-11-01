@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django.utils import timezone
 from mock import patch, Mock
-from ..models import Customer, Event, CurrentSubscription
+from ..models import Customer, Event, Subscription
 from payments.signals import WEBHOOK_SIGNALS
 from ..utils import get_user_model
 
@@ -199,13 +199,13 @@ class TestEventMethods(TestCase):
     @patch("stripe.Customer.retrieve")
     def test_customer_subscription_deleted(self, CustomerMock):
         """
-        Tests to make sure downstream signal handlers do not see stale CurrentSubscription object properties
+        Tests to make sure downstream signal handlers do not see stale Subscription object properties
         after a customer.subscription.deleted event occurs.  While the delete method is called
-        on the affected CurrentSubscription object's properties are still accessible (unless the
+        on the affected Subscription object's properties are still accessible (unless the
         Customer object for the event gets refreshed before sending the complimentary signal)
         """
         kind = "customer.subscription.deleted"
-        cs = CurrentSubscription(customer=self.customer, quantity=1, start=timezone.now(), amount=0)
+        cs = Subscription(customer=self.customer, quantity=1, start=timezone.now(), amount=0)
         cs.save()
         customer = Customer.objects.get(pk=self.customer.pk)
 

@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from mock import Mock
 from ..middleware import ActiveSubscriptionMiddleware
-from ..models import Customer, CurrentSubscription
+from ..models import Customer, Subscription
 from ..utils import get_user_model
 
 
@@ -85,7 +85,7 @@ class ActiveSubscriptionMiddlewareTests(TestCase):
             stripe_id="cus_1",
             user=self.request.user
         )
-        CurrentSubscription.objects.create(
+        Subscription.objects.create(
             customer=customer,
             plan="pro",
             quantity=1,

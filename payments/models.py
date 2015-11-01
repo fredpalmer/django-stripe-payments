@@ -314,6 +314,15 @@ class Customer(StripeObject):
         return smart_str(self.user)
 
     @property
+    def current_subscription(self):
+        """
+        A property to keep the notion of only one subscription to maintain backwards compatibility
+        till the one-to-many nature of customer-to-subscriptions is fully fleshed out
+        :return:
+        """
+        return self.subscription_set.first()
+
+    @property
     def stripe_customer(self):
         return stripe.Customer.retrieve(self.stripe_id)
 
@@ -348,13 +357,13 @@ class Customer(StripeObject):
     def has_active_subscription(self):
         try:
             return self.current_subscription.is_valid()
-        except CurrentSubscription.DoesNotExist:
+        except Subscription.DoesNotExist:
             return False
 
     def cancel(self, at_period_end=True):
         try:
             current = self.current_subscription
-        except CurrentSubscription.DoesNotExist:
+        except Subscription.DoesNotExist:
             return
         sub = self.stripe_customer.cancel_subscription(
             at_period_end=at_period_end
@@ -481,7 +490,7 @@ class Customer(StripeObject):
         if sub is None:
             try:
                 self.current_subscription.delete()
-            except CurrentSubscription.DoesNotExist:
+            except Subscription.DoesNotExist:
                 pass
         else:
             try:
@@ -500,8 +509,8 @@ class Customer(StripeObject):
                 sub_obj.start = convert_tstamp(sub.start)
                 sub_obj.quantity = sub.quantity
                 sub_obj.save()
-            except CurrentSubscription.DoesNotExist:
-                sub_obj = CurrentSubscription.objects.create(
+            except Subscription.DoesNotExist:
+                sub_obj = Subscription.objects.create(
                     customer=self,
                     plan=plan_from_stripe_id(sub.plan.id),
                     current_period_start=convert_tstamp(
@@ -600,12 +609,8 @@ class Customer(StripeObject):
         return Charge.sync_from_stripe_data(data)
 
 
-class CurrentSubscription(models.Model):
-    customer = models.OneToOneField(
-        Customer,
-        related_name="current_subscription",
-        null=True
-    )
+class Subscription(models.Model):
+    customer = models.ForeignKey(Customer, null=True)
     plan = models.CharField(max_length=100)
     quantity = models.IntegerField()
     start = models.DateTimeField()
@@ -654,7 +659,7 @@ class CurrentSubscription(models.Model):
         signal is triggered after a subscription has been deleted)
         :param using:
         """
-        super(CurrentSubscription, self).delete(using=using)
+        super(Subscription, self).delete(using=using)
         self.plan = None
         self.status = None
         self.quantity = 0
